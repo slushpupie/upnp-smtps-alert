@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+    <specVersion>
+        <major>1</major>
+        <minor>0</minor>
+    </specVersion>
+    <device>
+        <deviceType>urn:slushpupie-com:device:SmtpsAlert:1</deviceType>
+        <serviceList>
+            <service>
+                <serviceType>urn:slushpupie-com:service:SmtpsAlert:1</serviceType>
+                <serviceId>urn:slushpupie-com:serviceId:SmtpsAlert1</serviceId>
+                <SCPDURL>S_SmtpsAlert.xml</SCPDURL>
+            </service>
+        </serviceList>
+        <implementationList>
+            <implementationFile>I_SmtpsAlert.xml</implementationFile>
+        </implementationList>
+    </device>
+</root>
+

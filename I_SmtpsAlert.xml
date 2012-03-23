@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<implementation>
+    <functions>
+local smtps = nil
+
+function log(msg)
+  luup.log("SMTPS::"..(msg or "nil"))
+end
+
+function sendEmail(body, rcpt)
+  local mesgt = {
+    headers = {
+      to = rcpt,
+      subject = body
+    },
+    body = body
+  }
+
+  luup.log("SMTPS:: sendMessage Sending ".. body .. " to " .. rcpt .. " from " .. luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "FromEmail", parentDevice), 1)
+  luup.log("SMTPS:: server: " .. (luup.devices[parentDevice].ip or "smtp.gmail.com"), 1)
+  luup.log("SMTPS:: user: " .. luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "user", parentDevice) .. " pass: " .. luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "pass", parentDevice), 1)
+
+  local r, e = smtps.send{
+    from = "&lt;" .. luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "FromEmail", parentDevice) .. "&gt;",
+    rcpt = "&lt;" .. rcpt .. "&gt;",
+    source = smtps.message(mesgt),
+    server = luup.devices[parentDevice].ip or "smtp.gmail.com",
+    port = luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "port", parentDevice) or 465,
+    user = luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "user", parentDevice),
+    password = luup.variable_get("urn:slushpupie-com:serviceId:SmtpsAlert1", "pass", parentDevice)
+  }
+ 
+  log("sendMessage "..(r or "nil"))
+  log("sendMessage "..(e or "nil"))
+end
+
+function mystartup(lul_device)
+  luup.log("SMTPS:: startup with device " .. lul_device)
+  parentDevice = lul_device
+  package.loaded.smtps = nil
+  smtps = require("smtps")
+end
+
+</functions>
+    <startup>mystartup</startup>
+    <actionList>
+        <action>
+            <serviceId>urn:slushpupie-com:serviceId:SmtpsAlert1</serviceId>
+            <name>SendEmail</name>
+            <run>
+                sendEmail(lul_settings.Message or "nil", lul_settings.Recipient or "nil")
+            </run>
+        </action>
+    </actionList>
+</implementation>
+
