@@ -1,0 +1,3 @@
+[submodule "smtps"]
+	path = smtps
+	url = git://github.com/slushpupie/lua-smtps.git
